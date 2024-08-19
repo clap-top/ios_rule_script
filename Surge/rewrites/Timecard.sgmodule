@@ -8,4 +8,4 @@
 Timecard = script-name=Timecard,update-interval=3600
 
 [Script]
-Timecard = type=generic,timeout=10,script-path=https://raw.githubusercontent.com/clap-top/ios_rule_script/main/Surge/rewrites/scripts/timecard.js
+Timecard = type=generic,timeout=10,script-path=https://cdn.jsdelivr.net/gh/clap-top/ios_rule_script@main/Surge/rewrites/scripts/timecard.js
