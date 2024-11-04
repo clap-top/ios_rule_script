@@ -1,6 +1,6 @@
 # Originally From ConnersHua
 # https://github.com/DivineEngine/Profiles/blob/master/Quantumult/Filter/Extra/Apple/Music.list
-# > Apple Music
+# > Perplexity
 USER-AGENT,Perplexity*
 HOST-SUFFIX,perplexity.ai,Perplexity
 HOST-SUFFIX,pplx.ai,Perplexity
