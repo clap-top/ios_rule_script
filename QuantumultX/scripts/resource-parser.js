@@ -1,5 +1,5 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2024-07-05 13:15⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2024-11-06 19:18⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: https://t.me/Shawn_Parser_Bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
@@ -120,11 +120,28 @@ let version =
     : 0 // 版本号
 let Perror = 0 //错误类型
 
+const ADDRes = `quantumult-x:///add-resource?remote-resource=url-encoded-json`
+var RLink0 = {
+  filter_remote: [],
+  rewrite_remote: [],
+  server_remote: [],
+}
+const Field = {
+  filter: 'filter_remote',
+  rewrite: 'rewrite_remote',
+  server: 'server_remote',
+}
+
 const subtag = typeof $resource.tag != 'undefined' ? $resource.tag : ''
 ////// 非 raw 链接的沙雕情形
 content0 =
   content0.indexOf('DOCTYPE html') != -1 && link0.indexOf('github.com') != -1
     ? ToRaw(content0)
+    : content0
+// loon插件链接
+content0 =
+  link0.indexOf('nsloon.com/openloon/import?plugin=') != -1
+    ? ToLink(link0)
     : content0
 //ends 正常使用部分，調試註釋此部分
 
@@ -177,18 +194,6 @@ if (version == 0) {
     '\n👉 点击跳转商店链接更新',
     update_link
   )
-}
-
-const ADDRes = `quantumult-x:///add-resource?remote-resource=url-encoded-json`
-var RLink0 = {
-  filter_remote: [],
-  rewrite_remote: [],
-  server_remote: [],
-}
-const Field = {
-  filter: 'filter_remote',
-  rewrite: 'rewrite_remote',
-  server: 'server_remote',
 }
 
 SubFlow() //流量通知
@@ -783,7 +788,12 @@ var flag = 1
 function Parser() {
   type0 = Type_Check(content0) //  类型判断
   //$notify(type0)
-  if (type0 != 'web' && type0 != 'wrong-field' && type0 != 'JS-0') {
+  if (
+    type0 != 'web' &&
+    type0 != 'wrong-field' &&
+    type0 != 'JS-0' &&
+    type0 != 'wrong-link'
+  ) {
     try {
       //$notify(type0,"hh")
       if (Pdbg) {
@@ -1514,7 +1524,10 @@ function Type_Check(subs) {
       typeQ == 'unsupported' || typeQ == 'server'
         ? 'Subs-B64Encode'
         : 'wrong-field'
-  } //else if (typeQ == "URI")
+  } else if (subs == 'wrong-link') {
+    type = 'wrong-link'
+  }
+  //else if (typeQ == "URI")
   // 用于通知判断类型，debug
   if (typeU == 'X') {
     $notify('该链接判定类型', type + ' : ' + typec, subs)
@@ -1948,6 +1961,25 @@ function ToRaw(cnt) {
     )
   }
   return cnt
+}
+
+function ToLink(link) {
+  cnt = link.split('nsloon.com/openloon/import?plugin=')[1]
+  if (cnt) {
+    typ = $resource.type
+    RLink0[Field[typ]].push(cnt + ', opt-parser=true, tag=🉑️长点❤️8⃣️') //  跳转URI-Scheme
+    flink = ADDRes.replace(
+      /url-encoded-json/,
+      encodeURIComponent(JSON.stringify(RLink0))
+    )
+    $notify(
+      '⚠️ 请点击通知跳转尝试添加正确链接',
+      '🚥 请正确使用原始链接',
+      '❌ 你的链接：' + link0 + '\n✅ 正确链接：' + cnt,
+      { 'open-url': flink }
+    )
+  }
+  return 'wrong-link'
 }
 
 function CDN(cnt) {
@@ -3831,7 +3863,8 @@ function VL2QX(subs, Pudp, Ptfo, Pcert0, PTls13) {
         : 'obfs-host=' +
           decodeURIComponent(
             cnt.split('obfsParam=')[1].split('&')[0].split('#')[0]
-          )
+          ).replace(/\"|(Host\":)|\{|\}/g, '')
+
     puri =
       cnt.indexOf('path=') == -1
         ? puri
